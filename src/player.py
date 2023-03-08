@@ -6,6 +6,7 @@ class Player(pygame.sprite.Sprite):
         self.image = pygame.surface.Surface((90, 15))
         self.image.fill("white")
         self.rect = self.image.get_rect(midbottom = start_pos)
+        
         self.speed = spd
         self.x_constr = x_constr
 
