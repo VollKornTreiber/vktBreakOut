@@ -1,14 +1,21 @@
 import pygame
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, start_pos, spd, x_constr):
+    def __init__(self, start_pos, size_x, spd, x_constr):
         super().__init__()
-        self.image = pygame.surface.Surface((90, 15))
-        self.image.fill("white")
-        self.rect = self.image.get_rect(midbottom = start_pos)
-        
+        self.image = pygame.surface.Surface((size_x, 15))
+        self.rect = self.image.get_rect(topleft = (0,0))
+        pygame.draw.rect(self.image, "gray85",(0, 0, size_x, 15))
+        pygame.draw.lines(self.image, "white", False, (self.rect.bottomleft, self.rect.topleft, self.rect.topright), 2)
+        pygame.draw.lines(self.image, "gray42", False, (self.rect.bottomleft, self.rect.bottomright, self.rect.topright), 6)
+
+        self.size_x = size_x
         self.speed = spd
         self.x_constr = x_constr
+
+        #starting position
+        self.rect.x = start_pos[0] - self.rect.width / 2
+        self.rect.y = start_pos[1]
 
     def move(self):
         #input

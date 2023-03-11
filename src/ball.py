@@ -1,12 +1,13 @@
 import pygame
 from random import choice
+from math import floor
 
 class Ball(pygame.sprite.Sprite):
     def __init__(self, start_pos, radius, speed, constr_x, constr_top):
         super().__init__()
         self.image = pygame.surface.Surface((radius*2, radius*2))
-        self.image.fill("white")
         self.rect = self.image.get_rect(center = (0, 0))
+        pygame.draw.rect(self.image, "white", (0, 0, radius*2, radius*2), border_radius = radius)
         
         self.speed = speed
         self.rect.x = start_pos[0]
@@ -14,6 +15,8 @@ class Ball(pygame.sprite.Sprite):
 
         self.constr_x = constr_x
         self.constr_top = constr_top
+        self.base_speed = speed
+        self.speed_pts = 0
 
         self.dir_x = choice((1, -1))
         self.dir_y = -1
@@ -28,9 +31,17 @@ class Ball(pygame.sprite.Sprite):
         if self.rect.top <= self.constr_top:
             self.change_dir((1, -1))
 
+    def update_speed(self):
+        if not self.speed >= 8:
+            self.speed_pts += .1
+            self.speed = int(floor(self.base_speed + self.speed_pts))
+
     def change_dir(self, dir):
         self.dir_x *= dir[0]
         self.dir_y *= dir[1]
+
+    def reset(self, screen_h):
+        self.rect.y = screen_h / 2
     
     def update(self):
         self.move()
