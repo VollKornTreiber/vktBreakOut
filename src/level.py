@@ -27,33 +27,38 @@ class Block(pygame.sprite.Sprite):
             pygame.draw.rect(self.image, "red", (0, 0, width, height))
             pygame.draw.lines(self.image, "white", False, ((0, self.rect.h), (0, 0), (self.rect.w, 0)), 2)
             pygame.draw.lines(self.image, "salmon", False, ((0, self.rect.h), (self.rect.w, self.rect.h), (self.rect.w, 0),), 6)
+            self.value = 500
 
         if color == "b":
             pygame.draw.rect(self.image, "orangered", (0, 0, width, height))
             pygame.draw.lines(self.image, "white", False, ((0, self.rect.h), (0, 0), (self.rect.w, 0)), 2)
             pygame.draw.lines(self.image, "tomato3", False, ((0, self.rect.h), (self.rect.w, self.rect.h), (self.rect.w, 0),), 6)
+            self.value = 300
 
         if color == "c":
             pygame.draw.rect(self.image, "yellow", (0, 0, width, height))
             pygame.draw.lines(self.image, "white", False, ((0, self.rect.h), (0, 0), (self.rect.w, 0)), 2)
             pygame.draw.lines(self.image, "yellow3", False, ((0, self.rect.h), (self.rect.w, self.rect.h), (self.rect.w, 0),), 6)
+            self.value = 250
         
         if color == "d":
             pygame.draw.rect(self.image, "lime", (0, 0, width, height))
             pygame.draw.lines(self.image, "white", False, ((0, self.rect.h), (0, 0), (self.rect.w, 0)), 2)
             pygame.draw.lines(self.image, "yellow4", False, ((0, self.rect.h), (self.rect.w, self.rect.h), (self.rect.w, 0),), 6)
+            self.value = 200
 
         if color == "e":
             pygame.draw.rect(self.image, "blue", (0, 0, width, height))
             pygame.draw.lines(self.image, "white", False, ((0, self.rect.h), (0, 0), (self.rect.w, 0)), 2)
             pygame.draw.lines(self.image, "royalblue3", False, ((0, self.rect.h), (self.rect.w, self.rect.h), (self.rect.w, 0),), 6)
+            self.value = 150
 
         if color == "f":
             pygame.draw.rect(self.image, "purple", (0, 0, width, height))
             pygame.draw.lines(self.image, "white", False, ((0, self.rect.h), (0, 0), (self.rect.w, 0)), 2)
             pygame.draw.lines(self.image, "mediumpurple", False, ((0, self.rect.h), (self.rect.w, self.rect.h), (self.rect.w, 0),), 6)
+            self.value = 100
 
-        #return self
 
 lvl_list = [[#1
             "aaaaaaaa",
@@ -93,6 +98,22 @@ lvl_list = [[#1
             "ccc  ccc",
             "eeeeeeee",
             " bb  bb ",
+            "        "],
+
+            [#special
+            "aaaaaaaa",
+            "bbbbbbbb",
+            "cccccccc",
+            "dddddddd",
+            "eeeeeeee",
+            "ffffffff",
+            "        ",
+            "aaaaaaaa",
+            "bbbbbbbb",
+            "cccccccc",
+            "dddddddd",
+            "eeeeeeee",
+            "ffffffff",
             "        "],
 
             [#5

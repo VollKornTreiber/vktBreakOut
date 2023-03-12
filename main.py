@@ -1,6 +1,7 @@
 #vktBreakOut - A simple BreakOut clone and personal exercise in game developing
 
 import sys, pygame
+from math import floor
 from src.player import Player
 from src.ball import Ball
 from src.level import Level
@@ -10,6 +11,11 @@ FULLSCREEN = 0
 
 class Game:
     def __init__(self):
+        #State setup
+        self.game_state = 1
+        self.lives = 3
+        self.current_level = 1
+
         #Field setup
         self.field_surf = pygame.Surface((screen_W * .5, screen_H))
         self.field_surf.fill((20, 20, 20))
@@ -19,15 +25,15 @@ class Game:
         #Player setup
         self.player_surf = Player((screen_W / 2, self.field_rect.height * .95), 90, 5, (screen_W / 2 - self.field_surf.get_width() / 2 + (self.wall_thickness / 2), screen_W / 2 + self.field_surf.get_width() / 2 - (self.wall_thickness / 2)))
         self.player = pygame.sprite.GroupSingle(self.player_surf)
-        self.lives = 3
 
         #Ball setup
-        self.ball_surf = Ball((screen_W/2, screen_H/2), 5, 4, (screen_W / 2 - self.field_surf.get_width() / 2 + (self.wall_thickness / 2), screen_W / 2 + self.field_surf.get_width() / 2 - (self.wall_thickness / 2)), self.wall_thickness / 2)
+        self.ball_surf = Ball((screen_W/2, -4000), 5, 4, (screen_W / 2 - self.field_surf.get_width() / 2 + (self.wall_thickness / 2), screen_W / 2 + self.field_surf.get_width() / 2 - (self.wall_thickness / 2)), self.wall_thickness / 2)
         self.ball = pygame.sprite.GroupSingle(self.ball_surf)
 
         #level setup
         self.level_class = Level()
-        self.level = self.level_class.construct_level(screen_W, self.field_rect.width, lvl = 1)
+        self.level = self.level_class.construct_level(screen_W, self.field_rect.width, self.current_level)
+        
 
     def draw_field(self):
         screen.blit(self.field_surf, (screen_W / 2 - self.field_surf.get_width() / 2, 0))
@@ -62,26 +68,34 @@ class Game:
                     self.ball_surf.update_speed()
                     self.ball_surf.change_dir((-1, 1))
     
-    def check_lives(self, amount):
-        if self.lives <= 0:
-            self.gameOver()
+    def check_miss(self):
+        if self.ball_surf.rect.y >= screen_H + self.ball_surf.rect.width:
+            self.ball_surf.rect.y = -4000
+            self.ball_surf.speed_pts = 0
+            self.ball_surf.speed = int(floor(self.ball_surf.base_speed + self.ball_surf.speed_pts))
+            self.ball_surf.activated = False
+            self.lives -= 1
+            if self.lives <= 0:
+                self.game_state = 0 #Game Over!
 
     def check_level_finished(self):
         if not self.level:
             print("DONE!")
-
-    def gameOver(self, lives):
-        if lives <= 0:
-            while True:
-                print("GAME OVER!")
+            self.current_level += 1
+            self.level_class = Level()
+            self.level = self.level_class.construct_level(screen_W, self.field_rect.width, self.current_level)
 
     def run(self):
-        #logic update
-        self.player.update()
-        self.ball.update()
-        self.check_pad_collision()
-        self.check_block_collision()
-        self.check_level_finished()
+        if self.game_state == 0:
+            print("GAME OVER!")
+        else:
+            #logic update
+            self.player.update()
+            self.ball.update()
+            self.check_pad_collision()
+            self.check_block_collision()
+            self.check_level_finished()
+            self.check_miss()
 
         #image update
         self.draw_field()
@@ -123,11 +137,11 @@ if __name__ == "__main__":
                 end()
             #debug: ball reset
             if keys[pygame.K_SPACE]:
-                game.ball_surf.reset(screen_H)
+                if not game.ball_surf.activated:
+                    game.ball_surf.activate(game.player_surf.rect.centerx, game.player_surf.rect.y, game.player_surf.rect.width)
             
         
         screen.fill((50, 50, 50))
         game.run()
-        game.check_lives(game.lives)
         pygame.display.flip()
         clock.tick(60)

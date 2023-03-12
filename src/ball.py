@@ -17,6 +17,7 @@ class Ball(pygame.sprite.Sprite):
         self.constr_top = constr_top
         self.base_speed = speed
         self.speed_pts = 0
+        self.activated = False
 
         self.dir_x = choice((1, -1))
         self.dir_y = -1
@@ -40,9 +41,18 @@ class Ball(pygame.sprite.Sprite):
         self.dir_x *= dir[0]
         self.dir_y *= dir[1]
 
-    def reset(self, screen_h):
-        self.rect.y = screen_h / 2
+    def activate(self, player_x, player_y, playerwidth):
+        self.dir_x = choice((1, -1))
+        if self.dir_x == 1:
+            self.rect.x = player_x - (playerwidth / 2) + (self.rect.width)
+        else:
+            self.rect.x = player_x + (playerwidth / 2) - (self.rect.width)
+
+        self.dir_y = 1
+        self.rect.y = player_y - playerwidth + 20
+        self.activated = True
     
     def update(self):
-        self.move()
-        self.check_wall_collision()
+        if self.activated:
+            self.move()
+            self.check_wall_collision()
