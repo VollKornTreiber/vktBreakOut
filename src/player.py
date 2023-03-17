@@ -33,7 +33,7 @@ class Player(pygame.sprite.Sprite):
             if self.rect.right >= self.x_constr[1]:
                 self.rect.right = self.x_constr[1]
             else:
-                if keys[pygame.K_LSHIFT]:
+                if keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]:
                     self.rect.x += self.speed + 5   #accelerate
                 else:
                     self.rect.x += self.speed   #regular speed

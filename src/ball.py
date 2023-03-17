@@ -3,15 +3,15 @@ from random import choice
 from math import floor
 
 class Ball(pygame.sprite.Sprite):
-    def __init__(self, start_pos, radius, speed, constr_x, constr_top):
+    def __init__(self, radius, speed, constr_x, constr_top):
         super().__init__()
         self.image = pygame.surface.Surface((radius*2, radius*2))
         self.rect = self.image.get_rect(center = (0, 0))
         pygame.draw.rect(self.image, "white", (0, 0, radius*2, radius*2), border_radius = radius)
         
         self.speed = speed
-        self.rect.x = start_pos[0]
-        self.rect.y = start_pos[1]
+        self.rect.x = 0
+        self.rect.y = -400
 
         self.constr_x = constr_x
         self.constr_top = constr_top
@@ -51,6 +51,12 @@ class Ball(pygame.sprite.Sprite):
         self.dir_y = 1
         self.rect.y = player_y - playerwidth + 20
         self.activated = True
+
+    def deactivate(self):
+        self.rect.y = -400
+        self.speed_pts = 0
+        self.speed = int(floor(self.base_speed + self.speed_pts))
+        self.activated = False
     
     def update(self):
         if self.activated:

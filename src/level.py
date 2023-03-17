@@ -7,13 +7,13 @@ class Level(pygame.sprite.Group):
 
     def construct_level(self, screen_w, field_w, lvl):
         self.level_width = field_w - 100
+        if lvl <= len(lvl_list):
+            for index_row, row in enumerate(lvl_list[lvl-1]):
+                for index_col, col in enumerate(row):
+                    if not col == " ":
+                        self.block_surf = Block(self.level_width / 8, self.block_height, col, (screen_w / 2 - self.level_width / 2) + self.level_width / 8 * (index_col), 100 + self.block_height * (index_row))
+                        self.add(self.block_surf)
 
-        for index_row, row in enumerate(lvl_list[lvl-1]):
-            for index_col, col in enumerate(row):
-                if not col == " ":
-                    self.block_surf = Block(self.level_width / 8, self.block_height, col, (screen_w / 2 - self.level_width / 2) + self.level_width / 8 * (index_col), 100 + self.block_height * (index_row))
-                    self.add(self.block_surf)
-        
         return self
 
 class Block(pygame.sprite.Sprite):
@@ -30,7 +30,7 @@ class Block(pygame.sprite.Sprite):
             self.value = 500
 
         if color == "b":
-            pygame.draw.rect(self.image, "orangered", (0, 0, width, height))
+            pygame.draw.rect(self.image, "orange", (0, 0, width, height))
             pygame.draw.lines(self.image, "white", False, ((0, self.rect.h), (0, 0), (self.rect.w, 0)), 2)
             pygame.draw.lines(self.image, "tomato3", False, ((0, self.rect.h), (self.rect.w, self.rect.h), (self.rect.w, 0),), 6)
             self.value = 300
@@ -66,9 +66,7 @@ lvl_list = [[#1
             "cccccccc",
             "dddddddd",
             "eeeeeeee",
-            "ffffffff",
-            "        ",
-            "        "],
+            "ffffffff"],
 
             [#2
             "   aa   ",
@@ -78,7 +76,7 @@ lvl_list = [[#1
             "  eeee  ",
             "fffeefff",
             "feffffef",
-            "        "],
+            "   ff   "],
         
             [#3
             "acccccca",
@@ -87,8 +85,8 @@ lvl_list = [[#1
             " cccccc ",
             "bbb  bbb",
             "  dddd  ",
-            "        ",
-            "        "],
+            "   dd   ",
+            "   dd   "],
         
             [#4
             "        ",
@@ -98,7 +96,65 @@ lvl_list = [[#1
             "ccc  ccc",
             "eeeeeeee",
             " bb  bb ",
-            "        "],
+            "ee    ee"],
+
+            [#5
+            "dd dd dd",
+            " cd  dc ",
+            "  cbbc  ",
+            " cd  dc ",
+            "dd dd dd",
+            " cd  dc ",
+            "  cbbc  ",
+            " cd  dc ",
+            "dd dd dd",
+            " cd  dc "],
+
+            [#6
+            "cccccccc",
+            "        ",
+            "ff    ff",
+            " ffaaff ",
+            "  ffff  ",
+            " ffbbff ",
+            "ffb  bff",
+            "        ",
+            "cccccccc"],
+
+            [#7
+            "        ",
+            "abcabcab",
+            "bcabcabc",
+            "cab  bca",
+            "def  fde",
+            "efdefdef",
+            "fdefdefd"],
+
+            [#8
+            "        ",
+            "        ",
+            " bbbbbb ",
+            "bbbbbbbb",
+            " aaaaaa ",
+            "dddddddd",
+            "cccccccc",
+            "bbbbbbbb",
+            " bbbbbb "],
+
+            [#9
+            " eeeeee ",
+            "e      e",
+            "e cccc e",
+            "e c  c e",
+            "e cddc e",
+            "e c  c e",
+            "e cccc e",
+            "e c  c e",
+            "e cddc e",
+            "e c  c e",
+            "e cccc e",
+            "e      e",
+            " eeeeee "],
 
             [#special
             "aaaaaaaa",
@@ -116,7 +172,7 @@ lvl_list = [[#1
             "ffffffff",
             "        "],
 
-            [#5
+            [#signalize and triggers end screen
             "        ",
             "        ",
             "        ",
