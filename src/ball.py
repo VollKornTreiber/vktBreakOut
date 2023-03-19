@@ -9,6 +9,7 @@ class Ball(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center = (0, 0))
         pygame.draw.rect(self.image, "white", (0, 0, radius*2, radius*2), border_radius = radius)
         
+        self.wall_sound = pygame.mixer.Sound("audio/wall.ogg")
         self.speed = speed
         self.rect.x = 0
         self.rect.y = -400
@@ -29,8 +30,10 @@ class Ball(pygame.sprite.Sprite):
     def check_wall_collision(self):
         if self.rect.left <= self.constr_x[0] or self.rect.right >= self.constr_x[1]:
             self.change_dir((-1, 1))
+            self.wall_sound.play()
         if self.rect.top <= self.constr_top:
             self.change_dir((1, -1))
+            self.wall_sound.play()
 
     def update_speed(self):
         if not self.speed >= 8:

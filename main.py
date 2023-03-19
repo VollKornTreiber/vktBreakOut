@@ -8,18 +8,21 @@ from src.player import Player
 from src.ball import Ball
 from src.level import Level
 
-VER = "0.9"
+VER = "1.0"
 
 #tweaks
-FULLSCREEN = 0
+FULLSCREEN = True
+START_LEVEL = 1
+CHEAT_MODE = False
 
 class Game:
     def __init__(self):
         #State setup
         self.game_state = 1
         self.lives = 3
-        self.current_level = 1
+        self.current_level = START_LEVEL
         self.score = 0
+        self.bonus = 0
 
         #GUI setup
         self.font_large = pygame.font.Font("font/Pixeled.ttf", 20)
@@ -51,9 +54,21 @@ class Game:
         self.ball_surf = Ball(5, 4, (screen_W / 2 - self.field_surf.get_width() / 2 + (self.wall_thickness / 2), screen_W / 2 + self.field_surf.get_width() / 2 - (self.wall_thickness / 2)), self.wall_thickness / 2)
         self.ball = pygame.sprite.GroupSingle(self.ball_surf)
 
+        #Audio setup
+        pygame.mixer.set_num_channels(24)
+        self.pad_sound = pygame.mixer.Sound("audio/pad.ogg")
+        self.pad_sound.set_volume(.5)
+        self.wall_sound = pygame.mixer.Sound("audio/wall.ogg")
+        self.wall_sound.set_volume(.5)
+        self.progress_sound = pygame.mixer.Sound("audio/progress.ogg")
+        self.victory_sound = pygame.mixer.Sound("audio/victory.ogg")
+        self.miss_sound = pygame.mixer.Sound("audio/miss.ogg")
+        self.gameOver_sound = pygame.mixer.Sound("audio/game_over.ogg")
+
         #level setup
         self.level_class = Level()
         self.level = self.level_class.construct_level(screen_W, self.field_rect.width, self.current_level)
+        self.progress_sound.play()
         
 
     def draw_field(self):
@@ -66,14 +81,17 @@ class Game:
         #top collision
         if self.player_surf.rect.collidepoint(self.ball_surf.rect.midbottom) and (self.player_surf.rect.collidepoint(self.ball_surf.rect.bottomleft) or self.player_surf.rect.collidepoint(self.ball_surf.rect.bottomright)):
             self.ball_surf.change_dir((1, -1))
+            self.pad_sound.play()
 
         #right collision
         if self.player_surf.rect.collidepoint(self.ball_surf.rect.bottomright) and self.player_surf.rect.collidepoint(self.ball_surf.rect.midright) or self.player_surf.rect.collidepoint(self.ball_surf.rect.topright):
             self.ball_surf.change_dir((-1, 1))
+            self.pad_sound.play()
 
         #left collision
         if self.player_surf.rect.collidepoint(self.ball_surf.rect.bottomleft) and self.player_surf.rect.collidepoint(self.ball_surf.rect.midleft) or self.player_surf.rect.collidepoint(self.ball_surf.rect.topleft):
             self.ball_surf.change_dir((-1, 1))
+            self.pad_sound.play()
 
     def check_block_collision(self):
         if self.level.sprites():
@@ -81,28 +99,39 @@ class Game:
                 #bottom/top collision
                 if (block.rect.collidepoint(self.ball_surf.rect.midtop) and (block.rect.collidepoint(self.ball_surf.rect.topright) or block.rect.collidepoint(self.ball_surf.rect.topleft))) or (block.rect.collidepoint(self.ball_surf.rect.midbottom) and (block.rect.collidepoint(self.ball_surf.rect.bottomright) or block.rect.collidepoint(self.ball_surf.rect.bottomleft))):
                     self.ball_surf.update_speed()
-                    self.ball_surf.change_dir((1, -1))
+                    if not CHEAT_MODE:
+                        self.ball_surf.change_dir((1, -1))
                     self.score += int(block.value + (self.ball_surf.speed_pts * 10))
+                    self.bonus += int(block.value + (self.ball_surf.speed_pts * 10))
+                    self.check_extraLife()
+                    block.play_sound()
                     block.kill()
 
                 #left/right collision
                 if (block.rect.collidepoint(self.ball_surf.rect.midleft) and (block.rect.collidepoint(self.ball_surf.rect.topleft) or block.rect.collidepoint(self.ball_surf.rect.bottomleft))) or (block.rect.collidepoint(self.ball_surf.rect.midright) and (block.rect.collidepoint(self.ball_surf.rect.topright) or block.rect.collidepoint(self.ball_surf.rect.bottomright))):
                     self.ball_surf.update_speed()
-                    self.ball_surf.change_dir((-1, 1))
+                    if not CHEAT_MODE:
+                        self.ball_surf.change_dir((-1, 1))
                     self.score += int(block.value + (self.ball_surf.speed_pts * 10))
+                    self.bonus += int(block.value + (self.ball_surf.speed_pts * 10))
+                    self.check_extraLife()
+                    block.play_sound()
                     block.kill()
 
     def check_miss(self):
         if self.ball_surf.rect.y >= screen_H + self.ball_surf.rect.width:
             screen.fill((255, 0, 0))
             self.ball_surf.deactivate()
-            self.lives -= 1
+            if not CHEAT_MODE:
+                self.lives -= 1
+            self.miss_sound.play()
             if self.lives <= 0:
                 self.game_state = 0 #Game Over!
+                self.gameOver_sound.play()
 
     def check_level_finished(self):
         if not self.level:
-            print("DONE!")
+            self.progress_sound.play()
             self.ball_surf.deactivate()
             self.current_level += 1
             self.level_class = Level()
@@ -110,6 +139,14 @@ class Game:
             if not self.level:
                 #all levels finished
                 self.game_state = 3
+                self.victory_sound.play()
+
+    def check_extraLife(self):
+        if self.bonus >= 25000:
+            if self.lives < 5:
+                self.lives += 1
+            self.progress_sound.play()
+            self.bonus -= 25000
 
     def show_title(self):
         self.title = self.font_large.render("BreakOut Clone", False, "white")
@@ -118,12 +155,12 @@ class Game:
         screen.blit(self.author, (25, 70))
 
     def show_lives(self):
-        if self.lives >= 2:
+        if CHEAT_MODE:
+            self.lives_box = self.font_large.render("Lives", False, "gray45")
+        elif self.lives >= 2:
             self.lives_box = self.font_large.render("Lives", False, "white")
         elif self.lives == 1:
             self.lives_box = self.font_large.render("Lives", False, "red")
-        else:
-            self.lives_box = self.font_large.render("GAME OVER!", False, "red")
 
         screen.blit(self.lives_box, (screen_W - screen_W * .2, screen_H - screen_H * .2))
         for life in range(self.lives - 1):
@@ -150,6 +187,7 @@ class Game:
         self.level_class = Level()
         self.level = self.level_class.construct_level(screen_W, self.field_rect.width, self.current_level)
         self.player_surf.rect.centerx = (screen_W / 2)
+        self.progress_sound.play()
 
     def run(self):
 
@@ -193,14 +231,21 @@ class Game:
             self.title_box = self.title_text.get_rect(center = (screen_W / 2, screen_H / 2 - 100))
             screen.blit(self.title_text, self.title_box)
             screen.blit(self.font_large.render("by VollKornTreiber", False, "white"), (self.title_box.bottomleft[0], self.title_box.y + 150))
-            self.pressBut_text = self.font_large.render("-Press Enter to start-", False, "white")
+            if not CHEAT_MODE:
+                self.pressBut_text = self.font_large.render("-Press Enter to start-", False, "white")
+            else: 
+                self.pressBut_text = self.font_large.render("-Press Enter to start-", False, "red")
             self.pressBut_box = self.pressBut_text.get_rect(center = (screen_W / 2, self.title_box.y + 350))
             screen.blit(self.pressBut_text, self.pressBut_box)
 
         if self.game_state == 3:
             #Beaten the game!
             screen.blit(self.title_bg, (0, 0))
-            self.win_text = self.font_title.render("CONGRATULATIONS!", False, "gold")
+            if not CHEAT_MODE:
+                self.win_text = self.font_title.render("CONGRATULATIONS!", False, "gold")
+            else:
+                self.win_text = self.font_title.render("CHEATER!", False, "red")
+                self.score = 0
             self.win_box = self.win_text.get_rect(center = (screen_W / 2, screen_H / 2))
             screen.blit(self.win_text, self.win_box)
             self.show_score()
@@ -227,6 +272,7 @@ if __name__ == "__main__":
         screen = pygame.display.set_mode((screen_W, screen_H))
 
     pygame.display.set_caption("BreakOut Clone by VollKornTreiber")
+    pygame.mouse.set_visible(False)
     clock = pygame.time.Clock()
 
     #Game-Instance
@@ -253,8 +299,20 @@ if __name__ == "__main__":
                 #while main menu
                 if keys[pygame.K_RETURN] or keys[pygame.K_KP_ENTER]:
                     game.game_state = 2
+                if keys[pygame.K_LSHIFT] and keys[pygame.K_RIGHT]:
+                    if game.current_level in range(1, 11):
+                        game.current_level += 1
+                        game.level_class = Level()
+                        game.level = game.level_class.construct_level(screen_W, game.field_rect.width, game.current_level)
+                if keys[pygame.K_LSHIFT] and keys[pygame.K_LEFT]:
+                    if game.current_level in range(2, 12):
+                        game.current_level -= 1
+                        game.level_class = Level()
+                        game.level = game.level_class.construct_level(screen_W, game.field_rect.width, game.current_level)
                 if keys[pygame.K_ESCAPE]:
                     end()
+                if keys[pygame.K_LSHIFT] and keys[pygame.K_END]:
+                    CHEAT_MODE = not CHEAT_MODE
             
             if game.game_state == 2:
                 #while game
@@ -264,7 +322,13 @@ if __name__ == "__main__":
                 if keys[pygame.K_ESCAPE]:
                     game.reset()
                     game.game_state = 1 #return to main menu
-            
+
+            if keys[pygame.K_f]:
+                FULLSCREEN = not FULLSCREEN
+                if FULLSCREEN: 
+                    screen = pygame.display.set_mode((screen_W, screen_H), pygame.FULLSCREEN|pygame.SCALED)
+                else:
+                    screen = pygame.display.set_mode((screen_W, screen_H))
         
         screen.fill((50, 50, 50))
         game.run()

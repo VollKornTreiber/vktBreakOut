@@ -28,36 +28,45 @@ class Block(pygame.sprite.Sprite):
             pygame.draw.lines(self.image, "white", False, ((0, self.rect.h), (0, 0), (self.rect.w, 0)), 2)
             pygame.draw.lines(self.image, "salmon", False, ((0, self.rect.h), (self.rect.w, self.rect.h), (self.rect.w, 0),), 6)
             self.value = 500
+            self.sound = pygame.mixer.Sound("audio/A.ogg")
 
         if color == "b":
             pygame.draw.rect(self.image, "orange", (0, 0, width, height))
             pygame.draw.lines(self.image, "white", False, ((0, self.rect.h), (0, 0), (self.rect.w, 0)), 2)
             pygame.draw.lines(self.image, "tomato3", False, ((0, self.rect.h), (self.rect.w, self.rect.h), (self.rect.w, 0),), 6)
             self.value = 300
+            self.sound = pygame.mixer.Sound("audio/B.ogg")
 
         if color == "c":
             pygame.draw.rect(self.image, "yellow", (0, 0, width, height))
             pygame.draw.lines(self.image, "white", False, ((0, self.rect.h), (0, 0), (self.rect.w, 0)), 2)
             pygame.draw.lines(self.image, "yellow3", False, ((0, self.rect.h), (self.rect.w, self.rect.h), (self.rect.w, 0),), 6)
             self.value = 250
+            self.sound = pygame.mixer.Sound("audio/C.ogg")
         
         if color == "d":
             pygame.draw.rect(self.image, "lime", (0, 0, width, height))
             pygame.draw.lines(self.image, "white", False, ((0, self.rect.h), (0, 0), (self.rect.w, 0)), 2)
             pygame.draw.lines(self.image, "yellow4", False, ((0, self.rect.h), (self.rect.w, self.rect.h), (self.rect.w, 0),), 6)
             self.value = 200
+            self.sound = pygame.mixer.Sound("audio/D.ogg")
 
         if color == "e":
             pygame.draw.rect(self.image, "blue", (0, 0, width, height))
             pygame.draw.lines(self.image, "white", False, ((0, self.rect.h), (0, 0), (self.rect.w, 0)), 2)
             pygame.draw.lines(self.image, "royalblue3", False, ((0, self.rect.h), (self.rect.w, self.rect.h), (self.rect.w, 0),), 6)
             self.value = 150
+            self.sound = pygame.mixer.Sound("audio/E.ogg")
 
         if color == "f":
             pygame.draw.rect(self.image, "purple", (0, 0, width, height))
             pygame.draw.lines(self.image, "white", False, ((0, self.rect.h), (0, 0), (self.rect.w, 0)), 2)
             pygame.draw.lines(self.image, "mediumpurple", False, ((0, self.rect.h), (self.rect.w, self.rect.h), (self.rect.w, 0),), 6)
             self.value = 100
+            self.sound = pygame.mixer.Sound("audio/F.ogg")
+
+    def play_sound(self):
+        self.sound.play()
 
 
 lvl_list = [[#1
@@ -80,8 +89,8 @@ lvl_list = [[#1
         
             [#3
             "acccccca",
-            " cffffc ",
-            " cffffc ",
+            " caaaac ",
+            " caaaac ",
             " cccccc ",
             "bbb  bbb",
             "  dddd  ",
@@ -96,7 +105,9 @@ lvl_list = [[#1
             "ccc  ccc",
             "eeeeeeee",
             " bb  bb ",
-            "ee    ee"],
+            "ee    ee",
+            "ccc  ccc",
+            "e e  e e"],
 
             [#5
             "dd dd dd",
@@ -111,7 +122,8 @@ lvl_list = [[#1
             " cd  dc "],
 
             [#6
-            "cccccccc",
+            "        ",
+            "bbbbbbbb",
             "        ",
             "ff    ff",
             " ffaaff ",
@@ -119,19 +131,10 @@ lvl_list = [[#1
             " ffbbff ",
             "ffb  bff",
             "        ",
-            "cccccccc"],
+            "bbbbbbbb",
+            "bbbbbbbb"],
 
             [#7
-            "        ",
-            "abcabcab",
-            "bcabcabc",
-            "cab  bca",
-            "def  fde",
-            "efdefdef",
-            "fdefdefd"],
-
-            [#8
-            "        ",
             "        ",
             " bbbbbb ",
             "bbbbbbbb",
@@ -139,9 +142,39 @@ lvl_list = [[#1
             "dddddddd",
             "cccccccc",
             "bbbbbbbb",
-            " bbbbbb "],
+            " bbbbbb ",
+            "        "],
+
+            [#8
+            " bcabca ",
+            "b abca c",
+            "cabaabca",
+            "aaa  aaa",
+            "        ",
+            "de de de",
+            "efd  def",
+            "fd fd fd",
+            "  f  f  ",
+            "        ",
+            " a aa a ",
+            "abcabcba",
+            " cabcab "],
 
             [#9
+            " fff    ",
+            "fff aa  ",
+            "ff   aa ",
+            "ff   aa ",
+            "fff aa  ",
+            " fff    ",
+            "    aaa ",
+            "  ff aaa",
+            " ff   aa",
+            " ff   aa",
+            "  ff aaa",
+            "    aaa "],
+
+            [#10
             " eeeeee ",
             "e      e",
             "e cccc e",
@@ -156,20 +189,20 @@ lvl_list = [[#1
             "e      e",
             " eeeeee "],
 
-            [#special
+            [#11
             "aaaaaaaa",
             "bbbbbbbb",
             "cccccccc",
             "dddddddd",
-            "eeeeeeee",
-            "ffffffff",
+            "e e e e ",
+            " f f f f",
             "        ",
             "aaaaaaaa",
             "bbbbbbbb",
             "cccccccc",
             "dddddddd",
-            "eeeeeeee",
-            "ffffffff",
+            " e e e e",
+            "f f f f ",
             "        "],
 
             [#signalize and triggers end screen
