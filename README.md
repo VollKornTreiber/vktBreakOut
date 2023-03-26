@@ -1,6 +1,8 @@
 <h1>vktBreakOut</h1>
 
 <p>A simple Breakout-like clone and personal exercise in basic game development and Python 3.<br>
+Based on several "Clear Code" tutorials on Youtube. Really nice guy!<br>
+Font Pixeled.ttf by "OmegaPC777", as used in the tutorials.<br>
 Have fun!</p>
 
 <h2>Requirements</h2>
@@ -9,7 +11,6 @@ Have fun!</p>
 </ul>
 
 <h2>Controls</h2>
-
 <ul>
     <li> Arrow keys: Move paddle</li>
     <li> Shift + Arrow keys: Move paddle faster</li>
@@ -17,7 +18,6 @@ Have fun!</p>
     <li> ESC: Reset to main menu</li>
     <li> F: Toggle fullscreen</li>
 </ul>
-
 
 <h2>Changelog</h2>
 <ul>
