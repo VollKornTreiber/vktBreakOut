@@ -19,14 +19,13 @@ Have fun!</p>
 </ul>
 
 
-<h2>Changelog:</h2>
+<h2>Changelog</h2>
 <ul>
     <li>v1
         <ul>
             <li>Initial release</li>
         </ul>
     </li>
-
     <li>v0.9
         <ul>
             <li>Added sound</li>
