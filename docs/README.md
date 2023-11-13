@@ -1,4 +1,4 @@
-<h1>vktBreakOut</h1>
+# vktBreakOut
 
 <p>A simple Breakout-like clone and personal exercise in basic game development and Python 3.<br>
 Based on several "Clear Code" tutorials on Youtube. Really nice guy!<br>
@@ -18,6 +18,11 @@ Have fun!</p>
     <li> ESC: Reset to main menu</li>
     <li> F: Toggle fullscreen</li>
 </ul>
+
+<h2>Screenshots</h2>
+<img src="screen01.png" width="800" alt-text="Screenshot 1" />
+<img src="screen02.png" width="800" alt-text="Screenshot 2" />
+<img src="screen03.png" width="800" alt-text="Screenshot 3" />
 
 <h2>Changelog</h2>
 <ul>
