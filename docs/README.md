@@ -20,9 +20,9 @@ Have fun!</p>
 </ul>
 
 <h2>Screenshots</h2>
-<img src="screen01.png" width="800" alt-text="Screenshot 1" />
-<img src="screen02.png" width="800" alt-text="Screenshot 2" />
-<img src="screen03.png" width="800" alt-text="Screenshot 3" />
+<img src="screen01.png" width="800" alt="Screenshot 1" />
+<img src="screen02.png" width="800" alt="Screenshot 2" />
+<img src="screen03.png" width="800" alt="Screenshot 3" />
 
 <h2>Changelog</h2>
 <ul>
